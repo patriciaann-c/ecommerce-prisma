@@ -7,16 +7,17 @@ datasource db {
 }
 
 model Product {
-    id          Int          @id @default(autoincrement())
+    id          Int            @id @default(autoincrement())
     name        String
-    price       Decimal      @db.Decimal(10, 2)
+    price       Decimal        @db.Decimal(10, 2)
     description String?
-    createdAt   DateTime     @default(now())
-    inStock     Boolean      @default(true)
-    isFeatured  Boolean      @default(false)
+    createdAt   DateTime       @default(now())
+    inStock     Boolean        @default(true)
+    isFeatured  Boolean        @default(false)
     categoryId  Int?
-    category    Category?    @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+    category    Category?      @relation(fields: [categoryId], references: [id], onDelete: SetNull)
     tags        ProductTag[]
+    orders      OrderProduct[]
 }
 
 model Category {
@@ -44,6 +45,35 @@ model ProductTag {
     @@unique([productId, tagId])
 }
 
+enum OrderStatus {
+    PENDING
+    PAID
+    SHIPPED
+    CANCELLED
+}
+
+model Order {
+    id        Int         @id @default(autoincrement())
+    status    OrderStatus @default(PENDING)
+    createdAt DateTime    @default(now())
+
+    userId   Int            @unique
+    user     User           @relation(fields: [userId], references: [id])
+    products OrderProduct[]
+}
+
+model OrderProduct {
+    id        Int     @id @default(autoincrement())
+    quantity  Int     @default(1)
+    unitPrice Decimal @db.Decimal(10, 2)
+
+    orderId Int
+    order   Order @relation(fields: [orderId], references: [id])
+
+    productId Int
+    product   Product @relation(fields: [productId], references: [id])
+}
+
 model User {
     id       Int    @id @default(autoincrement())
     email    String @unique
@@ -52,6 +82,7 @@ model User {
 
     // Singolare e opzionale: l'utente può esistere senza profilo.
     profile Profile?
+    orders  Order[]
 }
 
 model Profile {
