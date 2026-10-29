@@ -21,10 +21,17 @@ model User {
     email    String @unique
     name     String
     password String
+
+    // Singolare e opzionale: l'utente può esistere senza profilo.
+    profile Profile?
 }
 
 model Profile {
     id     Int     @id @default(autoincrement())
     bio    String? @db.Text
     avatar String?
+
+    // FK con @unique: UN solo profilo per utente.
+    userId Int  @unique
+    user   User @relation(fields: [userId], references: [id])
 }

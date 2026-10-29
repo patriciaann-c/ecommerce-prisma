@@ -7,7 +7,8 @@
     "validate": "prisma validate",
     "generate": "prisma generate",
     "migrate": "prisma migrate dev",
-    "studio": "prisma studio"
+    "studio": "prisma studio",
+    "reset": "prisma migrate reset"
   },
   "keywords": [],
   "author": "",
