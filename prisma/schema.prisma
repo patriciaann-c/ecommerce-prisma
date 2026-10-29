@@ -15,7 +15,7 @@ model Product {
     inStock     Boolean        @default(true)
     isFeatured  Boolean        @default(false)
     categoryId  Int?
-    category    Category?      @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+    category    Category?      @relation(fields: [categoryId], references: [id], onDelete: Cascade)
     tags        ProductTag[]
     orders      OrderProduct[]
 }
