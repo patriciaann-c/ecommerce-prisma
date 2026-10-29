@@ -7,21 +7,41 @@ datasource db {
 }
 
 model Product {
-    id          Int       @id @default(autoincrement())
+    id          Int          @id @default(autoincrement())
     name        String
-    price       Decimal   @db.Decimal(10, 2)
+    price       Decimal      @db.Decimal(10, 2)
     description String?
-    createdAt   DateTime  @default(now())
-    inStock     Boolean   @default(true)
-    isFeatured  Boolean   @default(false)
+    createdAt   DateTime     @default(now())
+    inStock     Boolean      @default(true)
+    isFeatured  Boolean      @default(false)
     categoryId  Int?
-    category    Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+    category    Category?    @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+    tags        ProductTag[]
 }
 
 model Category {
     id       Int       @id @default(autoincrement())
     name     String    @unique
     products Product[]
+}
+
+model Tag {
+    id       Int          @id @default(autoincrement())
+    name     String       @unique
+    products ProductTag[]
+}
+
+model ProductTag {
+    id Int @id @default(autoincrement())
+
+    productId Int
+    product   Product @relation(fields: [productId], references: [id])
+
+    tagId Int
+    tag   Tag @relation(fields: [tagId], references: [id])
+
+    // La COPPIA è unica: lo stesso tag una volta sola per prodotto.
+    @@unique([productId, tagId])
 }
 
 model User {
